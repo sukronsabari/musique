@@ -22,11 +22,11 @@ export const musicPlayerSlice = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    setSong: (
+    setActiveSong: (
       state,
-      action: PayloadAction<{ song: Track; tracks: Track[]; index: number }>
+      action: PayloadAction<{ track: Track; tracks: Track[]; index: number }>
     ) => {
-      state.activeSong = action.payload.song;
+      state.activeSong = action.payload.track;
       state.tracks = action.payload.tracks;
       state.currentIndex = action.payload.index;
       state.isActive = true;
@@ -47,8 +47,11 @@ export const musicPlayerSlice = createSlice({
   },
 });
 
+// men-genereate reducer
 const { reducer: musicPlayerReducer } = musicPlayerSlice;
 
-export const { setSong, setIsPlaying, nextSong, prevSong } =
+// men-generate actions
+export const { setActiveSong, setIsPlaying, nextSong, prevSong } =
   musicPlayerSlice.actions;
+
 export default musicPlayerReducer;

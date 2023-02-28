@@ -8,6 +8,11 @@ module.exports = {
       },
       colors: {
         black: '#191624',
+        sidebar: '#F2F1F5',
+        body: '#F9F9F9',
+        paragraph: '#64748b',
+        dark: '#1e293b',
+        primary: '#0284c7',
       },
       animation: {
         slideup: 'slideup 1s ease-in-out',

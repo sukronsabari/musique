@@ -1,3 +1,11 @@
+export type TopChartResponse = {
+  ok: boolean;
+  result: {
+    properties?: {};
+    tracks: Track[];
+  };
+};
+
 export type Track = {
   layout: string;
   type: string;

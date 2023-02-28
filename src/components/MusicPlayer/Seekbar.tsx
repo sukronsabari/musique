@@ -4,36 +4,43 @@ type SeekbarProps = {
   currentTime: number;
   min: number;
   max: number;
-  onInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSeekChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function Seekbar({
   currentTime,
   min,
   max,
-  onInput,
+  handleSeekChange,
 }: SeekbarProps) {
-  function formatTime(milliseconds: number) {
-    let seconds = Math.floor(milliseconds / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  function formatTime(time: number) {
+    if (time === 0) {
+      return '00:00';
+    }
+
+    const minutes = Math.floor(time / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = Math.floor(time % 60)
+      .toString()
+      .padStart(2, '0');
+
+    return `${minutes}:${seconds}`;
   }
 
   return (
-    <div className="hidden sm:flex items-center">
-      <p className="text-white">{formatTime(currentTime)}</p>
+    <div className="hidden lg:flex space-x-4 items-center justify-center w-72">
+      <p className="text-paragraph">{formatTime(currentTime)}</p>
       <input
         type="range"
-        name="seekBar"
-        step="0.1"
+        step="any"
         min={min}
         max={max}
         value={currentTime}
-        onInput={onInput}
-        className="h-1 rounded hidden md:block"
+        onInput={handleSeekChange}
+        className="block flex-1"
       />
-      <p className="text-white">{formatTime(max)}</p>
+      <p className="text-paragraph">{formatTime(max)}</p>
     </div>
   );
 }

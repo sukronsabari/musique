@@ -1,15 +1,15 @@
 import Image from 'next/image';
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track as TrackType } from '@/redux/features/musicPlayerType';
 import NoCoverImage from '@/assets/nocoverart.jpg';
 
 type TrackProps = {
-  activeSong: Track;
+  activeSong: TrackType;
   isPlaying: boolean;
 };
 
 export default function Track({ activeSong, isPlaying }: TrackProps) {
   return (
-    <div className="flex-1 flex items-center">
+    <div className="sm:flex-1 flex items-center w-[120px] sm:w-auto">
       <div
         className={`hidden sm:block sm:mr-4 ${
           isPlaying && 'animate-spin-slow'
@@ -24,8 +24,12 @@ export default function Track({ activeSong, isPlaying }: TrackProps) {
         />
       </div>
       <div>
-        <p className="font-bold text-xl mb-1">{activeSong?.title}</p>
-        <p className="text-slate-500">{activeSong?.subtitle}</p>
+        <p className="font-bold text-base mb-1 truncate w-[100px] sm:w-auto md:text-lg">
+          {activeSong?.title}
+        </p>
+        <p className="text-paragraph text-xs truncate w-[100px] sm:w-auto md:text-base">
+          {activeSong?.subtitle}
+        </p>
       </div>
     </div>
   );

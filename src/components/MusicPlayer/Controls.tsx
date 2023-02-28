@@ -1,8 +1,14 @@
+/* eslint-disable react/button-has-type */
 import React from 'react';
 import { Track } from '@/redux/features/musicPlayerType';
-import { TbRepeat, TbArrowsShuffle } from 'react-icons/tb';
-import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
-import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
+import {
+  IconRepeat,
+  IconArrowsShuffle,
+  IconPlayerSkipBack,
+  IconPlayerSkipForward,
+  IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+} from '@tabler/icons-react';
 
 type ControlsProps = {
   tracks: Track[];
@@ -29,32 +35,40 @@ export default function Controls({
 }: ControlsProps) {
   const isDisable = tracks?.length > 0;
   return (
-    <div className="flex items-center justify-around ">
-      <TbRepeat
-        size={25}
-        className={repeat ? 'text-red-500' : 'text-slate-700'}
-        onClick={() => setRepeat(true)}
-      />
-      <button onClick={handlePrevSong} disabled={isDisable}>
-        <MdSkipPrevious size={25} className="text-slate-700" />
+    <div className="flex items-center justify-around w-full md:w-80 lg:w-full">
+      <button onClick={() => setRepeat((prev) => !prev)}>
+        <IconRepeat
+          size={25}
+          className={`cursor-pointer ${repeat ? 'text-primary' : 'text-dark'}`}
+        />
+      </button>
+      <button onClick={handlePrevSong} disabled={!isDisable}>
+        <IconPlayerSkipBack size={25} className="text-dark" />
       </button>
       {isPlaying ? (
-        <button onClick={handlePlayPause}>
-          <BsFillPauseFill size={25} className="text-slate-700" />
+        <button
+          onClick={handlePlayPause}
+          className="p-2 rounded-full bg-primary"
+        >
+          <IconPlayerPauseFilled size={25} className="text-white" />
         </button>
       ) : (
-        <button onClick={handlePlayPause}>
-          <BsFillPlayFill size={25} className="text-slate-700" />
+        <button
+          onClick={handlePlayPause}
+          className="p-2 rounded-full bg-primary"
+        >
+          <IconPlayerPlayFilled size={25} className="text-white" />
         </button>
       )}
-      <button onClick={handleNextSong} disabled={isDisable}>
-        <MdSkipNext size={25} className="text-slate-700" />
+      <button onClick={handleNextSong} disabled={!isDisable}>
+        <IconPlayerSkipForward size={25} className="text-dark" />
       </button>
-      <TbArrowsShuffle
-        size={25}
-        className={shuffle ? 'text-red-500' : 'text-slate-700'}
-        onClick={() => setShuffle(true)}
-      />
+      <button onClick={() => setShuffle((prev) => !prev)}>
+        <IconArrowsShuffle
+          size={25}
+          className={`cursor-pointer ${shuffle ? 'text-primary' : 'text-dark'}`}
+        />
+      </button>
     </div>
   );
 }

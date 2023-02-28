@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  TbVolume as VolumeHigh,
-  TbVolume2 as VolumeLow,
-  TbVolume3 as VolumeMute,
-} from 'react-icons/tb';
+  IconVolume as VolumeHigh,
+  IconVolume2 as VolumeLow,
+  IconVolume3 as VolumeMute,
+} from '@tabler/icons-react';
 
 type VolumeBarProps = {
   volume: number;
-  min: number;
-  max: number;
-  onVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  min: string;
+  max: string;
+  handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setVolume: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -17,11 +17,11 @@ export default function VolumeBar({
   volume,
   min,
   max,
-  onVolumeChange,
+  handleVolumeChange,
   setVolume,
 }: VolumeBarProps) {
   return (
-    <div className="hidden lg:flex-1 items-center">
+    <div className="hidden lg:flex flex-1 items-center justify-end">
       <div>
         {volume <= 1 && volume > 0.5 && (
           <VolumeHigh
@@ -48,11 +48,11 @@ export default function VolumeBar({
       <input
         type="range"
         name="volume"
-        id="volume"
+        step="any"
         value={volume}
         min={min}
         max={max}
-        onChange={onVolumeChange}
+        onInput={handleVolumeChange}
       />
     </div>
   );
