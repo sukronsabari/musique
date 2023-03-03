@@ -15,10 +15,8 @@ import PlayPauseIcon from '@/components/PlayPauseIcon';
 import SongCard from '@/components/SongCard';
 import { SongsRecomendationResponse } from '@/types/songRecomendation';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { generateOptions } from '@/utils';
 
-const API_KEY = process.env.NEXT_PUBLIC_RAPIDAPI_KEY || '';
-const API_HOST = process.env.NEXT_PUBLIC_RAPIDAPI_HOST || '';
 const BASE_URL = 'https://shazam.p.rapidapi.com';
 
 interface IParams extends ParsedUrlQuery {
@@ -29,7 +27,7 @@ export default function DetailSong({
   trackDetail,
   songsRecomendation,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [initRenderComplete, setInitRenderComplete] = useState(false);
+  const [preRenderComplete, setPreRenderComplete] = useState(false);
   const { isPlaying, activeSong } = useAppSelector(
     (state) => state.musicPlayer
   );
@@ -60,7 +58,7 @@ export default function DetailSong({
 
   useEffect(() => {
     // Updating a state causes a re-render
-    setInitRenderComplete(true);
+    setPreRenderComplete(true);
   }, []);
 
   return (
@@ -96,9 +94,7 @@ export default function DetailSong({
             {trackDetail?.title || 'No Title'}
           </h2>
           <p className="text-base font-medium mt-2 mb-4">
-            <Link href={artistId} className="hover:underline">
-              {trackDetail?.subtitle || 'No Subtitle'}
-            </Link>
+            {trackDetail?.subtitle || 'No Subtitle'}
           </p>
         </div>
       </div>
@@ -125,7 +121,7 @@ export default function DetailSong({
         </div>
       )}
 
-      {initRenderComplete && videoSection?.youtubeurl && (
+      {preRenderComplete && videoSection?.youtubeurl && (
         <div className="mt-12">
           <h2 className="font-bold text-2xl pl-6 mb-5 lg:pl-12">Video Music</h2>
           <VideoPlayer url={videoSection.youtubeurl.actions[0].uri} />
@@ -161,45 +157,31 @@ export const getStaticProps: GetStaticProps<{
 }> = async (context) => {
   const { songid } = context.params as IParams;
 
-  const generateOptions = ({
-    method = 'GET',
-    url,
-    id,
-  }: {
-    method: 'GET' | 'POST';
-    url: string;
-    id: string;
-  }) => {
-    return {
-      method,
-      url,
-      params: {
-        key: id,
-        locale: 'en-US',
-      },
-      headers: {
-        'X-RapidAPI-Key': API_KEY,
-        'X-RapidAPI-Host': API_HOST,
-      },
-    };
-  };
-
   const optionsSongDetail = generateOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/get-details`,
-    id: songid,
+    params: {
+      key: songid,
+      locale: 'en-US',
+    },
   });
 
   const optionsSongsRecomendation = generateOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/list-recommendations`,
-    id: songid,
+    params: {
+      key: songid,
+      locale: 'en-US',
+    },
   });
 
   const optionsSongsRecAlternatif = generateOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/list-recommendations`,
-    id: '484129036',
+    params: {
+      key: '484129036',
+      locale: 'en-US',
+    },
   });
 
   try {
@@ -246,8 +228,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     url: `${BASE_URL}/charts/track`,
     params: { locale: 'en-US', pageSize: '20', startFrom: '0' },
     headers: {
-      'X-RapidAPI-Key': API_KEY,
-      'X-RapidAPI-Host': API_HOST,
+      'X-RapidAPI-Key': process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
+      'X-RapidAPI-Host': process.env.NEXT_PUBLIC_RAPIDAPI_HOST,
     },
   };
 

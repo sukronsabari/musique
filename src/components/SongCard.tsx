@@ -69,9 +69,7 @@ export default function SongCard({
         </Link>
       </p>
       <p className="mt-1 text-xs text-paragraph truncate">
-        <Link href={artistId} className="hover:underline">
-          {track?.subtitle || 'No Subtitle'}
-        </Link>
+        {track?.subtitle || 'No Subtitle'}
       </p>
     </div>
   );

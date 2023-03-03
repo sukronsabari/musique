@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function SkeletonLoadingSlide({
   className = '',

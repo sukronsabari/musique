@@ -1,8 +1,11 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { v4 as uuidv4 } from 'uuid';
 import Skeleton from 'react-loading-skeleton';
 
-export default function SkeletonLoading({
+import 'react-loading-skeleton/dist/skeleton.css';
+
+export default function SkeletonLoadingGrid({
   className = '',
 }: {
   className?: string;

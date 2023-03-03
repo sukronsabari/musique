@@ -29,8 +29,8 @@ export default function SwiperSlideArtists({
           className="sm:!w-[130px]"
         >
           <TopArtistCircle
-            id={track?.artists?.length ? track.artists[0].adamid : '1'}
-            image={track?.images?.background || 'unsplash.com'}
+            // id={track?.artists?.length ? track.artists[0].adamid : '1'}
+            image={track?.images?.background}
             subtitle={track?.subtitle}
           />
         </SwiperSlide>

@@ -1,5 +1,4 @@
-import Logo from '@/assets/logo.svg';
-import Image from 'next/image';
+import Link from 'next/link';
 import Navigation from './Navigation';
 
 type SidebarProps = {
@@ -15,15 +14,11 @@ export default function Sidebar({ openMobileMenu }: SidebarProps) {
     >
       <div className="px-4 py-6">
         <div className="mt-4 mb-10 flex flex-col items-center">
-          <Image
-            src={Logo}
-            alt="logo"
-            width={88}
-            height={27}
-            className="scale-150 mb-8"
-          />
-          <Navigation />
+          <Link href="/" className="text-3xl font-bold block">
+            <span className="text-primary">Music</span>App.
+          </Link>
         </div>
+        <Navigation />
       </div>
     </div>
   );

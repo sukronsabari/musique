@@ -1,21 +1,34 @@
-/* eslint-disable import/no-extraneous-dependencies */
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useGetTopChartQuery } from '@/redux/services/api';
-import SongCard from '@/components/SongCard';
 import { useAppSelector } from '@/redux/app/hooks';
+import axios, { AxiosResponse } from 'axios';
 
+import SongCard from '@/components/SongCard';
 import SwiperSlideSong from '@/components/SwiperSlideSong';
 import SwiperSlideArtists from '@/components/SwiperSlideArtists';
-
-import 'react-loading-skeleton/dist/skeleton.css';
 import SkeletonLoadingGrid from '@/components/SkeletonLoadingGrid';
 import SkeletonLoadingSlide from '@/components/SkeletonLoadingSlide';
+import SwiperSlideSongEmpty from '@/components/SwiperSlideSongEmpty';
 
-export default function Home() {
+import { generateOptions } from '@/utils';
+import { SongsRecomendationResponse as ForYouSongsResponse } from '@/types/songRecomendation';
+
+export default function Home({
+  forYouSongs,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const { isPlaying, activeSong } = useAppSelector(
     (state) => state.musicPlayer
   );
-  const { data, error, isFetching } = useGetTopChartQuery();
+  const [preRenderComplete, setPreRenderComplete] = useState(false);
+
+  const { data, error, isFetching } = useGetTopChartQuery({ pageSize: 20 });
   const topArtists = data?.tracks.slice(0, 10);
+
+  useEffect(() => {
+    setPreRenderComplete(true);
+  }, []);
 
   if (isFetching) {
     return (
@@ -34,28 +47,75 @@ export default function Home() {
   return (
     <div className="px-6 py-5 lg:px-12">
       <h2 className="font-bold text-xl mb-6">For You</h2>
-      <SwiperSlideSong
-        tracks={data?.tracks}
-        activeSong={activeSong}
-        isPlaying={isPlaying}
-      />
+      {preRenderComplete && forYouSongs?.tracks?.length ? (
+        <SwiperSlideSong
+          tracks={forYouSongs.tracks}
+          activeSong={activeSong}
+          isPlaying={isPlaying}
+        />
+      ) : (
+        <SwiperSlideSongEmpty />
+      )}
 
       <h2 className="font-bold text-xl mt-10 mb-6">Top Artists</h2>
       <SwiperSlideArtists topArtists={topArtists} />
 
-      <h2 className="font-bold text-xl mt-16 mb-6">Recomended</h2>
+      <div className="flex justify-between items-center mt-16 mb-6">
+        <h2 className="font-bold text-xl">Top Chart</h2>
+        <Link
+          href="/topchart"
+          className="font-medium text-paragraph hover:underline"
+        >
+          See more
+        </Link>
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-        {data?.tracks?.map((track, index) => (
-          <SongCard
-            key={track.key}
-            track={track}
-            tracks={data?.tracks}
-            index={index}
-            isPlaying={isPlaying}
-            activeSong={activeSong}
-          />
-        ))}
+        {data?.tracks.length &&
+          data?.tracks?.map((track, index) => (
+            <SongCard
+              key={track.key}
+              track={track}
+              tracks={data?.tracks}
+              index={index}
+              isPlaying={isPlaying}
+              activeSong={activeSong}
+            />
+          ))}
       </div>
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps<{
+  forYouSongs: ForYouSongsResponse;
+}> = async () => {
+  const BASE_URL = 'https://shazam.p.rapidapi.com';
+  const options = generateOptions({
+    method: 'GET',
+    url: `${BASE_URL}/songs/list-recommendations`,
+    params: {
+      key: '413168592',
+      locale: 'en-US',
+    },
+  });
+
+  try {
+    const response: AxiosResponse<ForYouSongsResponse> = await axios.request(
+      options
+    );
+    const forYouSongs = response.data;
+
+    return {
+      props: {
+        forYouSongs,
+      },
+    };
+  } catch (error) {
+    const emptySongs = [] as unknown as ForYouSongsResponse;
+    return {
+      props: {
+        forYouSongs: emptySongs,
+      },
+    };
+  }
+};

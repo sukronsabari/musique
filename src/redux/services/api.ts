@@ -18,17 +18,19 @@ export const shazamApi = createApi({
   baseQuery,
   endpoints: (builder) => ({
     // builder.query<TipeDariResponse, TipeParameterYandDikirimKeEndpointIni>
-    getTopChart: builder.query<TopChartResponse, void>({
-      query: () => `/charts/track?locale=en-US&pageSize=20&startFrom=0`,
-    }),
-    getRecomendationSongs: builder.query<
-      SongsRecomendationResponse,
-      { songid: number }
+    getTopChart: builder.query<
+      TopChartResponse,
+      { pageSize?: number; startFrom?: number }
     >({
-      query: ({ songid }) =>
-        `/songs/list-recommendations?key=${songid}&locale=en-US`,
+      query: ({ pageSize = 20, startFrom = 0 }) => {
+        return `/charts/track?locale=en-US&pageSize=${pageSize}&startFrom=${startFrom}`;
+      },
+    }),
+    getRecomendedForYouSongs: builder.query<SongsRecomendationResponse, void>({
+      query: () => `/songs/list-recommendations?key=413168592&locale=en-US`,
     }),
   }),
 });
 
-export const { useGetTopChartQuery, useGetRecomendationSongsQuery } = shazamApi;
+export const { useGetTopChartQuery, useGetRecomendedForYouSongsQuery } =
+  shazamApi;

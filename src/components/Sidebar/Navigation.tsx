@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { IconSmartHome, IconUsers, IconHash } from '@tabler/icons-react';
+import { IconSmartHome, IconHash } from '@tabler/icons-react';
 import React from 'react';
 
 type NavLinkProps = {
@@ -38,11 +38,11 @@ export default function Navigation() {
             <IconSmartHome />
           </NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink href="/topartist" text="Top Artists">
             <IconUsers />
           </NavLink>
-        </li>
+        </li> */}
         <li>
           <NavLink href="/topchart" text="Top Chart">
             <IconHash />
