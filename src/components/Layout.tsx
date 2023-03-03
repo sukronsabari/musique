@@ -22,9 +22,9 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <main className="flex">
+    <main className="flex p-0 m-0">
       <Sidebar openMobileMenu={openMobileMenu} />
-      <div className="flex-1 relative h-screen overflow-y-scroll hide-scrollbar">
+      <div className="flex-1 relative h-screen overflow-y-scroll hide-scrollbar bg-body">
         <div className="sticky top-0 left-0 w-full h-[72px] z-10 border-b border-b-slate-200 bg-body flex items-center">
           <Topbar
             searchTerm={searchTerm}
@@ -32,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
             handleOpenMobileMenu={handleOpenMobileMenu}
           />
         </div>
-        <div className="px-6 py-5 pb-56">{children}</div>
+        <div className="pb-56">{children}</div>
       </div>
       {activeSong?.title && (
         <div className="fixed bottom-0 left-0 z-[20] w-full overflow-hidden border-t border-t-primary/20">

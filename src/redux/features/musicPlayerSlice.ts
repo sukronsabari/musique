@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Track } from './musicPlayerType';
+import { SongDetailResponse } from '@/types/songDetail';
+import { Track } from '../../types/topChart';
 
 type InitialState = {
-  tracks: Track[];
-  activeSong: Track;
+  tracks: Track[] | SongDetailResponse[];
+  activeSong: Track | SongDetailResponse;
   currentIndex: number;
   isActive: boolean;
   isPlaying: boolean;
@@ -24,7 +25,11 @@ export const musicPlayerSlice = createSlice({
   reducers: {
     setActiveSong: (
       state,
-      action: PayloadAction<{ track: Track; tracks: Track[]; index: number }>
+      action: PayloadAction<{
+        track: Track | SongDetailResponse;
+        tracks: Track[] | SongDetailResponse[];
+        index: number;
+      }>
     ) => {
       state.activeSong = action.payload.track;
       state.tracks = action.payload.tracks;

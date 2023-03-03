@@ -1,6 +1,7 @@
 import { Swiper, SwiperSlide, SwiperRef } from 'swiper/react';
 import { FreeMode } from 'swiper';
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track } from '@/types/topChart';
+import { SongDetailResponse } from '@/types/songDetail';
 import { useRef } from 'react';
 import SongCard from './SongCard';
 import CustomNavigationSwiper from './CustomNavigationSwiper';
@@ -9,8 +10,8 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 
 type SwiperSlideProps = {
-  tracks: Track[] | undefined;
-  activeSong: Track;
+  tracks: Track[] | SongDetailResponse[] | undefined;
+  activeSong: Track | SongDetailResponse;
   isPlaying: boolean;
 };
 

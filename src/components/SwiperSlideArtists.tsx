@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper';
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track } from '@/types/topChart';
 import TopArtistCircle from './TopArtistCircle';
 
 import 'swiper/css';

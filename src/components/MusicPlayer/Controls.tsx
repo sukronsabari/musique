@@ -1,6 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React from 'react';
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track } from '@/types/topChart';
+import { SongDetailResponse } from '@/types/songDetail';
 import {
   IconRepeat,
   IconArrowsShuffle,
@@ -11,8 +12,9 @@ import {
 } from '@tabler/icons-react';
 
 type ControlsProps = {
-  tracks: Track[];
+  tracks: Track[] | SongDetailResponse[];
   isPlaying: boolean;
+  currentIndex: number;
   repeat: boolean;
   setRepeat: React.Dispatch<React.SetStateAction<boolean>>;
   shuffle: boolean;
@@ -25,6 +27,7 @@ type ControlsProps = {
 export default function Controls({
   tracks,
   isPlaying,
+  currentIndex,
   repeat,
   setRepeat,
   shuffle,
@@ -33,7 +36,6 @@ export default function Controls({
   handlePrevSong,
   handleNextSong,
 }: ControlsProps) {
-  const isDisable = tracks?.length > 0;
   return (
     <div className="flex items-center justify-around w-full md:w-80 lg:w-full">
       <button onClick={() => setRepeat((prev) => !prev)}>
@@ -42,8 +44,12 @@ export default function Controls({
           className={`cursor-pointer ${repeat ? 'text-primary' : 'text-dark'}`}
         />
       </button>
-      <button onClick={handlePrevSong} disabled={!isDisable}>
-        <IconPlayerSkipBack size={25} className="text-dark" />
+      <button
+        onClick={handlePrevSong}
+        disabled={currentIndex === 0}
+        className="text-dark disabled:text-paragraph"
+      >
+        <IconPlayerSkipBack size={25} />
       </button>
       {isPlaying ? (
         <button
@@ -60,8 +66,12 @@ export default function Controls({
           <IconPlayerPlayFilled size={25} className="text-white" />
         </button>
       )}
-      <button onClick={handleNextSong} disabled={!isDisable}>
-        <IconPlayerSkipForward size={25} className="text-dark" />
+      <button
+        onClick={handleNextSong}
+        disabled={currentIndex === tracks.length - 1}
+        className="text-dark disabled:text-paragraph"
+      >
+        <IconPlayerSkipForward size={25} />
       </button>
       <button onClick={() => setShuffle((prev) => !prev)}>
         <IconArrowsShuffle

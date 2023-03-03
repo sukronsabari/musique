@@ -1,16 +1,18 @@
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track } from '@/types/topChart';
+import { SongDetailResponse } from '@/types/songDetail';
 import Image from 'next/image';
 import NoCoverArtImage from '@/assets/nocoverart.jpg';
 import { useAppDispatch } from '@/redux/app/hooks';
 import { setActiveSong, setIsPlaying } from '@/redux/features/musicPlayerSlice';
+import Link from 'next/link';
 import PlayPauseIcon from './PlayPauseIcon';
 
 type SongCardProps = {
-  track: Track;
-  tracks: Track[];
+  track: Track | SongDetailResponse;
+  tracks: Track[] | SongDetailResponse[];
   index: number;
   isPlaying: boolean;
-  activeSong: Track;
+  activeSong: Track | SongDetailResponse;
 };
 
 export default function SongCard({
@@ -30,6 +32,10 @@ export default function SongCard({
   const handlePauseClick = () => {
     dispatch(setIsPlaying(false));
   };
+
+  const artistId = track?.artists?.length
+    ? `/artists/${track.artists[0].adamid}`
+    : '/topartist';
 
   return (
     <div className="p-4 bg-white rounded-lg max-w-[160px] sm:max-w-[190px] md:max-w-[210px] lg:max-w-[190px]">
@@ -57,9 +63,15 @@ export default function SongCard({
           className="rounded-lg object-cover w-full"
         />
       </div>
-      <p className="mt-2 truncate">{track?.title || 'No Title'}</p>
+      <p className="mt-2 truncate">
+        <Link href={`/songs/${track.key}`} className="hover:underline">
+          {track.title}
+        </Link>
+      </p>
       <p className="mt-1 text-xs text-paragraph truncate">
-        {track?.subtitle || 'No Subtitle'}
+        <Link href={artistId} className="hover:underline">
+          {track?.subtitle || 'No Subtitle'}
+        </Link>
       </p>
     </div>
   );

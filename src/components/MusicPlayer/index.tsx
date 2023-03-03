@@ -38,23 +38,28 @@ export default function MusicPlayer() {
     else dispatch(setIsPlaying(true));
   };
 
+  const handleNextSong = () => {
+    if (currentIndex === tracks.length - 1) {
+      // eslint-disable-next-line no-useless-return
+      dispatch(setIsPlaying(false));
+      // return;
+    } else if (!shuffle) {
+      dispatch(nextSong((currentIndex + 1) % tracks.length));
+    } else {
+      dispatch(nextSong(Math.floor(Math.random() * tracks.length)));
+    }
+  };
+
   const handlePrevSong = () => {
     if (currentIndex === 0) {
-      dispatch(prevSong(tracks.length - 1));
-    } else if (shuffle) {
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+    if (shuffle) {
       // Math.random() * tracks.length => get number (0 sampai tracks.length - 1)
       dispatch(prevSong(Math.floor(Math.random() * tracks.length)));
     } else {
       dispatch(prevSong(currentIndex - 1));
-    }
-  };
-
-  const handleNextSong = () => {
-    if (!shuffle) {
-      // get number 0 - 19. Jika current index 19, maka ( 19 + 1 ) % 20 = 0
-      dispatch(nextSong((currentIndex + 1) % tracks.length));
-    } else {
-      dispatch(nextSong(Math.floor(Math.random() * tracks.length)));
     }
   };
 
@@ -80,6 +85,7 @@ export default function MusicPlayer() {
         <Controls
           tracks={tracks}
           isPlaying={isPlaying}
+          currentIndex={currentIndex}
           repeat={repeat}
           setRepeat={setRepeat}
           shuffle={shuffle}

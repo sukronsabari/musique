@@ -2,12 +2,13 @@ import {
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
 } from '@tabler/icons-react';
-import { Track } from '@/redux/features/musicPlayerType';
+import { Track } from '@/types/topChart';
+import { SongDetailResponse } from '@/types/songDetail';
 
 type PlayPauseProps = {
-  track: Track;
+  track: Track | SongDetailResponse;
   isPlaying: boolean;
-  activeSong: Track;
+  activeSong: Track | SongDetailResponse;
   handlePlay: () => void;
   handlePause: () => void;
 };
@@ -22,7 +23,7 @@ export default function PlayPauseIcon({
   if (isPlaying && activeSong?.title === track?.title) {
     return (
       <IconPlayerPauseFilled
-        className="text-white"
+        className="text-white cursor-pointer"
         size={50}
         onClick={handlePause}
       />
@@ -31,7 +32,7 @@ export default function PlayPauseIcon({
 
   return (
     <IconPlayerPlayFilled
-      className="text-white"
+      className="text-white cursor-pointer"
       size={50}
       onClick={handlePlay}
     />

@@ -1,9 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
 export type TopChartResponse = {
-  ok: boolean;
-  result: {
-    properties?: {};
-    tracks: Track[];
-  };
+  properties?: {};
+  tracks: Track[];
 };
 
 export type Track = {
@@ -17,7 +15,7 @@ export type Track = {
   hub: Hub;
   artists?: Artist[];
   url: string;
-  highlightsurls: Highlightsurls;
+  highlightsurls?: Highlightsurls;
 };
 
 interface Highlightsurls {

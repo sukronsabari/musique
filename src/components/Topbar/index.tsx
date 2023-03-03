@@ -15,7 +15,7 @@ export default function Topbar({
   handleOpenMobileMenu,
 }: TopbarProps) {
   return (
-    <div className="flex-1 flex items-center py-2 px-4 gap-4 sm:gap-0 sm:space-x-4 sm:px-8">
+    <div className="flex-1 flex items-center px-4 gap-4 sm:gap-0 sm:space-x-4 sm:px-8">
       <PageNavigation />
       <Searchbar searchTerm={searchTerm} onSearchChange={onSearchChange} />
       <button
