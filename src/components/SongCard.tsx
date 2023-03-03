@@ -33,10 +33,6 @@ export default function SongCard({
     dispatch(setIsPlaying(false));
   };
 
-  const artistId = track?.artists?.length
-    ? `/artists/${track.artists[0].adamid}`
-    : '/topartist';
-
   return (
     <div className="p-4 bg-white rounded-lg max-w-[160px] sm:max-w-[190px] md:max-w-[210px] lg:max-w-[190px]">
       <div className="relative group">

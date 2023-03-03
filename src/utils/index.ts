@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-const generateOptions = ({
+const generateRequestOptions = ({
   method = 'GET',
   url,
   params,
@@ -19,4 +19,4 @@ const generateOptions = ({
   };
 };
 
-export { generateOptions };
+export { generateRequestOptions };

@@ -1,5 +1,6 @@
-import { ReactNode, useState, ChangeEvent } from 'react';
+import { ReactNode, useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useAppSelector } from '@/redux/app/hooks';
+import { useRouter } from 'next/router';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import MusicPlayer from './MusicPlayer';
@@ -13,13 +14,30 @@ export default function Layout({ children }: LayoutProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
   const { activeSong } = useAppSelector((state) => state.musicPlayer);
 
+  const router = useRouter();
+
   const onSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    router.push(`/search/${encodeURIComponent(searchTerm)}`);
   };
 
   const handleOpenMobileMenu = () => {
     setOpenMobileMenu((state) => !state);
   };
+
+  useEffect(() => {
+    const { asPath } = router;
+
+    // jika /search/kucing maka akan : ["", "search", "kucing"]
+    const searchTermUrl = asPath.split('/')[2];
+    if (searchTermUrl) {
+      setSearchTerm(decodeURIComponent(searchTermUrl));
+    }
+  }, [router]);
 
   return (
     <main className="flex p-0 m-0">
@@ -30,6 +48,7 @@ export default function Layout({ children }: LayoutProps) {
             searchTerm={searchTerm}
             onSearchChange={onSearchChangeHandler}
             handleOpenMobileMenu={handleOpenMobileMenu}
+            onSubmit={onSubmitHandler}
           />
         </div>
         <div className="pb-56">{children}</div>

@@ -13,9 +13,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/app/hooks';
 import { setIsPlaying, setActiveSong } from '@/redux/features/musicPlayerSlice';
 import PlayPauseIcon from '@/components/PlayPauseIcon';
 import SongCard from '@/components/SongCard';
-import { SongsRecomendationResponse } from '@/types/songRecomendation';
+import { SongsRecomendationResponse } from '@/types/songsRecomendation';
 import { useState, useEffect } from 'react';
-import { generateOptions } from '@/utils';
+import { generateRequestOptions } from '@/utils';
 
 const BASE_URL = 'https://shazam.p.rapidapi.com';
 
@@ -51,10 +51,6 @@ export default function DetailSong({
   const handlePauseClick = () => {
     dispatch(setIsPlaying(false));
   };
-
-  const artistId = trackDetail?.artists?.length
-    ? `/artists/${trackDetail.artists[0].adamid}`
-    : '/topartist';
 
   useEffect(() => {
     // Updating a state causes a re-render
@@ -157,7 +153,7 @@ export const getStaticProps: GetStaticProps<{
 }> = async (context) => {
   const { songid } = context.params as IParams;
 
-  const optionsSongDetail = generateOptions({
+  const optionsSongDetail = generateRequestOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/get-details`,
     params: {
@@ -166,7 +162,7 @@ export const getStaticProps: GetStaticProps<{
     },
   });
 
-  const optionsSongsRecomendation = generateOptions({
+  const optionsSongsRecomendation = generateRequestOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/list-recommendations`,
     params: {
@@ -175,7 +171,7 @@ export const getStaticProps: GetStaticProps<{
     },
   });
 
-  const optionsSongsRecAlternatif = generateOptions({
+  const optionsSongsRecAlternatif = generateRequestOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/list-recommendations`,
     params: {

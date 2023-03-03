@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { SongsRecomendationResponse } from '@/types/songRecomendation';
+import { SongsRecomendationResponse } from '@/types/songsRecomendation';
 import { TopChartResponse } from '../../types/topChart';
 
 const API_KEY = process.env.NEXT_PUBLIC_RAPIDAPI_KEY || '';

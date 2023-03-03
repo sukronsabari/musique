@@ -12,8 +12,8 @@ import SkeletonLoadingGrid from '@/components/SkeletonLoadingGrid';
 import SkeletonLoadingSlide from '@/components/SkeletonLoadingSlide';
 import SwiperSlideSongEmpty from '@/components/SwiperSlideSongEmpty';
 
-import { generateOptions } from '@/utils';
-import { SongsRecomendationResponse as ForYouSongsResponse } from '@/types/songRecomendation';
+import { generateRequestOptions } from '@/utils';
+import { SongsRecomendationResponse as ForYouSongsResponse } from '@/types/songsRecomendation';
 
 export default function Home({
   forYouSongs,
@@ -90,7 +90,7 @@ export const getStaticProps: GetStaticProps<{
   forYouSongs: ForYouSongsResponse;
 }> = async () => {
   const BASE_URL = 'https://shazam.p.rapidapi.com';
-  const options = generateOptions({
+  const options = generateRequestOptions({
     method: 'GET',
     url: `${BASE_URL}/songs/list-recommendations`,
     params: {
