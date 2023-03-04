@@ -205,7 +205,7 @@ export const getStaticProps: GetStaticProps<{
         trackDetail: dataSongDetail.data,
         songsRecomendation: songs,
       },
-      // revalidate: 172800,
+      revalidate: 172800,
     };
   } catch (error) {
     console.log(error);
@@ -217,7 +217,7 @@ export const getStaticProps: GetStaticProps<{
         trackDetail: trackEmpty,
         songsRecomendation: songsRecomendationEmpty,
       },
-      // revalidate: 172800, // revalidate setiap 2 hari (dalam detik)
+      revalidate: 172800, // revalidate setiap 2 hari (dalam detik)
     };
   }
 };

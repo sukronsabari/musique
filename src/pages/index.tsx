@@ -114,6 +114,7 @@ export const getStaticProps: GetStaticProps<{
       props: {
         forYouSongs: emptySongs,
       },
+      revalidate: 172800,
     };
   }
 };
