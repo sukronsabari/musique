@@ -4,6 +4,7 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import { Provider } from 'react-redux';
+import Head from 'next/head';
 import { store } from '../redux/store';
 
 import '@/styles/globals.css';
@@ -24,6 +25,10 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   if (Component.getLayout) {
     return Component.getLayout(
       <Provider store={store}>
+        <Head>
+          <title>MusiQue</title>
+          <link rel="shortcut icon" href="favicon.svg" type="image/svg" />
+        </Head>
         <Component {...pageProps} />
       </Provider>
     );
@@ -31,6 +36,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <Provider store={store}>
+      <Head>
+        <title>MusiQue</title>
+      </Head>
       <Layout>
         <Component {...pageProps} />
       </Layout>

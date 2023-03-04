@@ -7,9 +7,14 @@ type NavLinkProps = {
   href: string;
   text: string;
   children: React.ReactNode;
+  handleClick: () => void;
 };
 
-function NavLink({ href, text, children }: NavLinkProps) {
+type NavigationProps = {
+  setOpenMobileMenu: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function NavLink({ href, text, children, handleClick }: NavLinkProps) {
   const router = useRouter();
   const isActive = router.pathname === href;
 
@@ -19,6 +24,7 @@ function NavLink({ href, text, children }: NavLinkProps) {
       className={`flex items-center space-x-2 px-6 py-3 rounded-lg hover:bg-white hover:text-primary transition-all ${
         isActive ? 'bg-white text-primary' : 'bg-transparent text-slate-800'
       }`}
+      onClick={handleClick}
     >
       {children}
       <span>{text}</span>
@@ -26,7 +32,7 @@ function NavLink({ href, text, children }: NavLinkProps) {
   );
 }
 
-export default function Navigation() {
+export default function Navigation({ setOpenMobileMenu }: NavigationProps) {
   return (
     <nav className="w-full">
       <p className="pl-5 text-xs text-left mb-4 text-slate-400 tracking-widest">
@@ -34,7 +40,11 @@ export default function Navigation() {
       </p>
       <ul className="flex flex-col space-y-4 w-full">
         <li>
-          <NavLink href="/" text="Home">
+          <NavLink
+            href="/"
+            text="Home"
+            handleClick={() => setOpenMobileMenu(false)}
+          >
             <IconSmartHome />
           </NavLink>
         </li>
@@ -44,7 +54,11 @@ export default function Navigation() {
           </NavLink>
         </li> */}
         <li>
-          <NavLink href="/topchart" text="Top Chart">
+          <NavLink
+            href="/topchart"
+            text="Top Chart"
+            handleClick={() => setOpenMobileMenu(false)}
+          >
             <IconHash />
           </NavLink>
         </li>

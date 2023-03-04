@@ -41,7 +41,10 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <main className="flex p-0 m-0">
-      <Sidebar openMobileMenu={openMobileMenu} />
+      <Sidebar
+        openMobileMenu={openMobileMenu}
+        setOpenMobileMenu={setOpenMobileMenu}
+      />
       <div className="flex-1 relative h-screen overflow-y-scroll hide-scrollbar bg-body">
         <div className="sticky top-0 left-0 w-full h-[72px] z-10 border-b border-b-slate-200 bg-body flex items-center">
           <Topbar

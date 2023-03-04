@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
 import Image from 'next/image';
+import Head from 'next/head';
 import { SongDetailResponse } from '@/types/songDetail';
 import { TopChartResponse } from '@/types/topChart';
 import NoCoverArt from '@/assets/nocoverart.jpg';
@@ -59,6 +60,9 @@ export default function DetailSong({
 
   return (
     <>
+      <Head>
+        <title>MusiQue | Song detail</title>
+      </Head>
       <div className="flex flex-col items-center bg-gradient-to-b from-sky-900 to-slate-900 text-white pt-6 pb-2 lg:flex-row lg:bg-gradient-to-r lg:from-transparent lg:to-primary/60 lg:text-dark lg:px-12 lg:py-5">
         <div className="relative group">
           <div

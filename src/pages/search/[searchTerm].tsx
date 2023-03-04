@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import axios, { AxiosResponse } from 'axios';
 import { useAppSelector } from '@/redux/app/hooks';
@@ -7,7 +9,6 @@ import SkeletonLoadingGrid from '@/components/SkeletonLoadingGrid';
 
 import { generateRequestOptions } from '@/utils';
 import { SongsResultResponse, Hit } from '@/types/songsResult';
-import { useEffect, useState } from 'react';
 
 interface IParams extends ParsedUrlQuery {
   searchTerm: string;
@@ -15,6 +16,7 @@ interface IParams extends ParsedUrlQuery {
 
 export default function SearchPage({
   tracksHitsResult,
+  searchTerm,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { isPlaying, activeSong } = useAppSelector(
     (state) => state.musicPlayer
@@ -39,29 +41,36 @@ export default function SearchPage({
   }
 
   return (
-    <div className="px-4 py-5 sm:px-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-        {tracksHitsResult.length ? (
-          tracksHitsResult.map((hit, index) => (
-            <SongCard
-              key={hit.track.key}
-              track={hit.track}
-              tracks={tracks}
-              index={index}
-              isPlaying={isPlaying}
-              activeSong={activeSong}
-            />
-          ))
-        ) : (
-          <h2 className="px-4 sm:px-6 my-5">Song Not Found</h2>
-        )}
+    <>
+      <Head>
+        <title>MusiQue | Search</title>
+      </Head>
+      <div className="px-4 py-5 sm:px-6">
+        <h2 className="font-bold text-xl mb-6">Result For: {searchTerm}</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {tracksHitsResult.length ? (
+            tracksHitsResult.map((hit, index) => (
+              <SongCard
+                key={hit.track.key}
+                track={hit.track}
+                tracks={tracks}
+                index={index}
+                isPlaying={isPlaying}
+                activeSong={activeSong}
+              />
+            ))
+          ) : (
+            <h2 className="px-4 sm:px-6 my-5">Song Not Found</h2>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 export const getServerSideProps: GetServerSideProps<{
   tracksHitsResult: Hit[];
+  searchTerm: string;
 }> = async (context) => {
   const { searchTerm } = context.params as IParams;
   const BASE_URL = 'https://shazam.p.rapidapi.com';
@@ -85,6 +94,7 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         tracksHitsResult: response.data.tracks.hits,
+        searchTerm: decodeURIComponent(searchTerm),
       },
     };
   } catch (error) {
@@ -96,6 +106,7 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         tracksHitsResult: emptyResult,
+        searchTerm: decodeURIComponent(searchTerm),
       },
     };
   }
