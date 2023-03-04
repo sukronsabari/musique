@@ -11,7 +11,7 @@ type InitialState = {
   isPlaying: boolean;
 };
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
   tracks: [],
   activeSong: {} as Track,
   currentIndex: 0,
