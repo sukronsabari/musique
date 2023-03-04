@@ -46,9 +46,11 @@ export default function SearchPage({
         <title>MusiQue | Search</title>
       </Head>
       <div className="px-4 py-5 sm:px-6">
-        <h2 className="font-bold text-xl mb-6">Result For: {searchTerm}</h2>
+        <h2 className="font-bold text-xl mb-6">
+          Result For: {searchTerm || ''}
+        </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {tracksHitsResult.length ? (
+          {tracksHitsResult?.length ? (
             tracksHitsResult.map((hit, index) => (
               <SongCard
                 key={hit.track.key}
@@ -93,8 +95,8 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        tracksHitsResult: response?.data?.tracks?.hits,
-        searchTerm: decodeURIComponent(searchTerm),
+        tracksHitsResult: response?.data?.tracks?.hits || [],
+        searchTerm: searchTerm ? decodeURIComponent(searchTerm) : '',
       },
     };
   } catch (error) {
@@ -106,7 +108,7 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         tracksHitsResult: emptyResult,
-        searchTerm: decodeURIComponent(searchTerm),
+        searchTerm: searchTerm ? decodeURIComponent(searchTerm) : '',
       },
     };
   }

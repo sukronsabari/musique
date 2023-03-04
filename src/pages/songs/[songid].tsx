@@ -228,8 +228,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     url: `${BASE_URL}/charts/track`,
     params: { locale: 'en-US', pageSize: '20', startFrom: '0' },
     headers: {
-      'X-RapidAPI-Key': process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
-      'X-RapidAPI-Host': process.env.NEXT_PUBLIC_RAPIDAPI_HOST,
+      'X-RapidAPI-Key': process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_KEY,
+      'X-RapidAPI-Host': process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_HOST,
     },
   };
 
