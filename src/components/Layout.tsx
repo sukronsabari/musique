@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     const { asPath } = router;
-    console.log(asPath);
+
     // jika /search/kucing maka akan : ["", "search", "kucing"]
     const urlPath = asPath.split('/');
     const searchTermUrl = urlPath[2];
