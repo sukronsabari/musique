@@ -32,8 +32,17 @@ export default function Home() {
     );
   }
 
+  console.log(data);
+
   if (error) {
-    return <h1 className="mx-4 my-5 sm:mx-6">Ups, something went wrong</h1>;
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)]">
+        <h1 className="my-5 font-bold text-2xl">Ups, something went wrong.</h1>
+        <p className="font-medium text-paragraph">
+          You have exceeded your MONTHLY quota for Requests to the API
+        </p>
+      </div>
+    );
   }
 
   return (

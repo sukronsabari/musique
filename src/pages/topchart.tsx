@@ -14,7 +14,7 @@ export default function TopChart() {
   const [initLoad, setInitLoad] = useState(true);
   const [loadMoreSongs, setLoadMoreSongs] = useState(false);
 
-  const { data, isFetching } = useGetTopChartQuery({
+  const { data, isFetching, error } = useGetTopChartQuery({
     pageSize: 20,
     startFrom,
   });
@@ -44,6 +44,17 @@ export default function TopChart() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)]">
+        <h1 className="my-5 font-bold text-2xl">Ups, something went wrong.</h1>
+        <p className="font-medium text-paragraph text-center">
+          You have exceeded your MONTHLY quota for Requests to the API
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -52,7 +63,7 @@ export default function TopChart() {
       <div className="px-6 py-5 lg:px-12">
         <h2 className="font-bold text-xl mb-6">Top Chart</h2>
         <div>
-          {songs?.length ? (
+          {songs?.length && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {songs?.map((track, index) => (
                 <SongCard
@@ -65,10 +76,6 @@ export default function TopChart() {
                 />
               ))}
             </div>
-          ) : (
-            <h2 className="font-bold px-4 py-5 sm:px-6 text-xl">
-              Songs Not Found
-            </h2>
           )}
 
           {!loadMoreSongs && songs?.length >= 20 && (

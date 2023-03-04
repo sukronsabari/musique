@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { SongsRecomendationResponse } from '@/types/songsRecomendation';
 import { TopChartResponse } from '../../types/topChart';
+import { SongDetailResponse } from '../../types/songDetail';
 
 const API_KEY = process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_KEY || '';
 const API_HOST = process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_HOST || '';
@@ -26,6 +27,9 @@ export const shazamApi = createApi({
         return `/charts/track?locale=en-US&pageSize=${pageSize}&startFrom=${startFrom}`;
       },
     }),
+    getSongDetail: builder.query<SongDetailResponse, { songid: string }>({
+      query: ({ songid }) => `/songs/get-details?key=${songid}&locale=en-US`,
+    }),
     getRecomendedForYouSongs: builder.query<SongsRecomendationResponse, void>({
       query: () => `/songs/list-recommendations?key=413168592&locale=en-US`,
     }),
@@ -37,6 +41,7 @@ export const shazamApi = createApi({
 
 export const {
   useGetTopChartQuery,
+  useGetSongDetailQuery,
   useGetRecomendedForYouSongsQuery,
   useGetSongsRecomendationQuery,
 } = shazamApi;

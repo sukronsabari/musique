@@ -4,9 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { GetStaticProps, InferGetStaticPropsType, GetStaticPaths } from 'next';
-import axios from 'axios';
-import { ParsedUrlQuery } from 'querystring';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch, useAppSelector } from '@/redux/app/hooks';
@@ -15,45 +12,44 @@ import { setIsPlaying, setActiveSong } from '@/redux/features/musicPlayerSlice';
 import VideoPlayer from '@/components/VideoPlayer';
 import PlayPauseIcon from '@/components/PlayPauseIcon';
 import SongCard from '@/components/SongCard';
+import SkeletonLoadingGrid from '@/components/SkeletonLoadingGrid';
 
 import NoCoverArt from '@/assets/nocoverart.jpg';
-import { generateRequestOptions } from '@/utils';
 
-import { SongDetailResponse } from '@/types/songDetail';
-import { useGetSongsRecomendationQuery } from '@/redux/services/api';
-import { paths } from '@/assets/constant';
+import {
+  useGetSongDetailQuery,
+  useGetSongsRecomendationQuery,
+} from '@/redux/services/api';
 
-const BASE_URL = 'https://shazam.p.rapidapi.com';
-
-interface IParams extends ParsedUrlQuery {
-  songid: string;
-}
-
-export default function DetailSong({
-  trackDetail,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [preRenderComplete, setPreRenderComplete] = useState(false);
+export default function DetailSong() {
+  const [initialRender, setInitialRender] = useState(false);
   const { isPlaying, activeSong } = useAppSelector(
     (state) => state.musicPlayer
   );
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { songid } = router.query;
 
   const { data: songsRecomendation } = useGetSongsRecomendationQuery();
+  const { data: trackDetail } = useGetSongDetailQuery({
+    songid: songid ? songid.toString() : '',
+  });
 
-  const videoSection = trackDetail?.sections?.find(
-    (section) => section.type === 'VIDEO'
-  );
+  const videoSection =
+    trackDetail &&
+    trackDetail?.sections?.find((section) => section.type === 'VIDEO');
 
-  const lyricsSections = trackDetail?.sections?.find(
-    (section) => section.type === 'LYRICS'
-  );
+  const lyricsSections =
+    trackDetail &&
+    trackDetail?.sections?.find((section) => section.type === 'LYRICS');
 
   const handlePlayClick = () => {
-    dispatch(
-      setActiveSong({ track: trackDetail, tracks: [trackDetail], index: 0 })
-    );
-    dispatch(setIsPlaying(true));
+    if (trackDetail) {
+      dispatch(
+        setActiveSong({ track: trackDetail, tracks: [trackDetail], index: 0 })
+      );
+      dispatch(setIsPlaying(true));
+    }
   };
 
   const handlePauseClick = () => {
@@ -62,7 +58,7 @@ export default function DetailSong({
 
   useEffect(() => {
     // Updating a state causes a re-render
-    setPreRenderComplete(true);
+    setInitialRender(true);
   }, []);
 
   if (router.isFallback) {
@@ -82,13 +78,15 @@ export default function DetailSong({
             }`}
           >
             <div className="text-white">
-              <PlayPauseIcon
-                track={trackDetail}
-                isPlaying={isPlaying}
-                activeSong={activeSong}
-                handlePlay={handlePlayClick}
-                handlePause={handlePauseClick}
-              />
+              {trackDetail && Object.keys(trackDetail).length !== 0 && (
+                <PlayPauseIcon
+                  track={trackDetail}
+                  isPlaying={isPlaying}
+                  activeSong={activeSong}
+                  handlePlay={handlePlayClick}
+                  handlePause={handlePauseClick}
+                />
+              )}
             </div>
           </div>
           <Image
@@ -132,14 +130,14 @@ export default function DetailSong({
         </div>
       )}
 
-      {preRenderComplete && videoSection?.youtubeurl && (
+      {initialRender && videoSection?.youtubeurl && (
         <div className="mt-12">
           <h2 className="font-bold text-2xl pl-6 mb-5 lg:pl-12">Video Music</h2>
           <VideoPlayer url={videoSection.youtubeurl.actions[0].uri} />
         </div>
       )}
 
-      {preRenderComplete && songsRecomendation?.tracks?.length && (
+      {initialRender && songsRecomendation?.tracks?.length ? (
         <div className="mt-12">
           <h2 className="font-bold text-2xl pl-5 mb-5 lg:pl-12">
             Similar Songs
@@ -157,51 +155,53 @@ export default function DetailSong({
             ))}
           </div>
         </div>
+      ) : (
+        <SkeletonLoadingGrid />
       )}
     </>
   );
 }
 
-export const getStaticProps: GetStaticProps<{
-  trackDetail: SongDetailResponse;
-}> = async (context) => {
-  const { songid } = context.params as IParams;
+// export const getStaticProps: GetStaticProps<{
+//   trackDetail: SongDetailResponse;
+// }> = async (context) => {
+//   const { songid } = context.params as IParams;
 
-  const optionsSongDetail = generateRequestOptions({
-    method: 'GET',
-    url: `${BASE_URL}/songs/get-details`,
-    params: {
-      key: songid,
-      locale: 'en-US',
-    },
-  });
+//   const optionsSongDetail = generateRequestOptions({
+//     method: 'GET',
+//     url: `${BASE_URL}/songs/get-details`,
+//     params: {
+//       key: songid,
+//       locale: 'en-US',
+//     },
+//   });
 
-  try {
-    const dataSongDetail = await axios.request(optionsSongDetail);
+//   try {
+//     const dataSongDetail = await axios.request(optionsSongDetail);
 
-    return {
-      props: {
-        trackDetail: dataSongDetail.data,
-      },
-      revalidate: 172800,
-    };
-  } catch (error) {
-    console.log(error);
+//     return {
+//       props: {
+//         trackDetail: dataSongDetail.data,
+//       },
+//       revalidate: 172800,
+//     };
+//   } catch (error) {
+//     console.log(error);
 
-    const trackEmpty = [] as unknown as SongDetailResponse;
+//     const trackEmpty = [] as unknown as SongDetailResponse;
 
-    return {
-      props: {
-        trackDetail: trackEmpty,
-      },
-      revalidate: 172800, // revalidate setiap 2 hari (dalam detik)
-    };
-  }
-};
+//     return {
+//       props: {
+//         trackDetail: trackEmpty,
+//       },
+//       revalidate: 172800, // revalidate setiap 2 hari (dalam detik)
+//     };
+//   }
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths,
-    fallback: true,
-  };
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
