@@ -29,8 +29,14 @@ export const shazamApi = createApi({
     getRecomendedForYouSongs: builder.query<SongsRecomendationResponse, void>({
       query: () => `/songs/list-recommendations?key=413168592&locale=en-US`,
     }),
+    getSongsRecomendation: builder.query<SongsRecomendationResponse, void>({
+      query: () => `/songs/list-recommendations?key=484129036&locale=en-US`,
+    }),
   }),
 });
 
-export const { useGetTopChartQuery, useGetRecomendedForYouSongsQuery } =
-  shazamApi;
+export const {
+  useGetTopChartQuery,
+  useGetRecomendedForYouSongsQuery,
+  useGetSongsRecomendationQuery,
+} = shazamApi;

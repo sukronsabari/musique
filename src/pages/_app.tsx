@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/ban-types */
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
@@ -5,6 +6,7 @@ import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import { Provider } from 'react-redux';
 import Head from 'next/head';
+import NextNProgress from 'nextjs-progressbar';
 import { store } from '../redux/store';
 
 import '@/styles/globals.css';
@@ -29,6 +31,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           <title>MusiQue</title>
           <link rel="shortcut icon" href="favicon.svg" type="image/svg" />
         </Head>
+        <NextNProgress />
         <Component {...pageProps} />
       </Provider>
     );
@@ -39,6 +42,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         <title>MusiQue</title>
       </Head>
+      <NextNProgress />
       <Layout>
         <Component {...pageProps} />
       </Layout>

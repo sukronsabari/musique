@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { GetStaticProps, InferGetStaticPropsType, GetStaticPaths } from 'next';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { ParsedUrlQuery } from 'querystring';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,8 +20,8 @@ import NoCoverArt from '@/assets/nocoverart.jpg';
 import { generateRequestOptions } from '@/utils';
 
 import { SongDetailResponse } from '@/types/songDetail';
-import { TopChartResponse } from '@/types/topChart';
-import { SongsRecomendationResponse } from '@/types/songsRecomendation';
+import { useGetSongsRecomendationQuery } from '@/redux/services/api';
+import { paths } from '@/assets/constant';
 
 const BASE_URL = 'https://shazam.p.rapidapi.com';
 
@@ -31,7 +31,6 @@ interface IParams extends ParsedUrlQuery {
 
 export default function DetailSong({
   trackDetail,
-  songsRecomendation,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [preRenderComplete, setPreRenderComplete] = useState(false);
   const { isPlaying, activeSong } = useAppSelector(
@@ -39,6 +38,8 @@ export default function DetailSong({
   );
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const { data: songsRecomendation } = useGetSongsRecomendationQuery();
 
   const videoSection = trackDetail?.sections?.find(
     (section) => section.type === 'VIDEO'
@@ -138,7 +139,7 @@ export default function DetailSong({
         </div>
       )}
 
-      {songsRecomendation?.tracks?.length && (
+      {preRenderComplete && songsRecomendation?.tracks?.length && (
         <div className="mt-12">
           <h2 className="font-bold text-2xl pl-5 mb-5 lg:pl-12">
             Similar Songs
@@ -163,7 +164,6 @@ export default function DetailSong({
 
 export const getStaticProps: GetStaticProps<{
   trackDetail: SongDetailResponse;
-  songsRecomendation: SongsRecomendationResponse;
 }> = async (context) => {
   const { songid } = context.params as IParams;
 
@@ -176,44 +176,12 @@ export const getStaticProps: GetStaticProps<{
     },
   });
 
-  const optionsSongsRecomendation = generateRequestOptions({
-    method: 'GET',
-    url: `${BASE_URL}/songs/list-recommendations`,
-    params: {
-      key: songid,
-      locale: 'en-US',
-    },
-  });
-
-  const optionsSongsRecAlternatif = generateRequestOptions({
-    method: 'GET',
-    url: `${BASE_URL}/songs/list-recommendations`,
-    params: {
-      key: '484129036',
-      locale: 'en-US',
-    },
-  });
-
   try {
-    const [dataSongDetail, dataSongsRecomendation, dataSongsRecAlternatif] =
-      await Promise.all([
-        axios.request(optionsSongDetail),
-        axios.request(optionsSongsRecomendation),
-        axios.request(optionsSongsRecAlternatif),
-      ]);
-
-    const songs =
-      dataSongsRecomendation.data &&
-      Object.keys(dataSongsRecomendation.data)?.length !== 0
-        ? dataSongsRecomendation.data
-        : dataSongsRecAlternatif.data;
-
-    console.log(`Generating page using songid: ${songid}`);
+    const dataSongDetail = await axios.request(optionsSongDetail);
 
     return {
       props: {
         trackDetail: dataSongDetail.data,
-        songsRecomendation: songs,
       },
       revalidate: 172800,
     };
@@ -221,11 +189,10 @@ export const getStaticProps: GetStaticProps<{
     console.log(error);
 
     const trackEmpty = [] as unknown as SongDetailResponse;
-    const songsRecomendationEmpty = [] as unknown as SongsRecomendationResponse;
+
     return {
       props: {
         trackDetail: trackEmpty,
-        songsRecomendation: songsRecomendationEmpty,
       },
       revalidate: 172800, // revalidate setiap 2 hari (dalam detik)
     };
@@ -233,25 +200,6 @@ export const getStaticProps: GetStaticProps<{
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const options = {
-    method: 'GET',
-    url: `${BASE_URL}/charts/track`,
-    params: { locale: 'en-US', pageSize: '20', startFrom: '0' },
-    headers: {
-      'X-RapidAPI-Key': process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_KEY,
-      'X-RapidAPI-Host': process.env.NEXT_PUBLIC_MUSIQUE_RAPIDAPI_HOST,
-    },
-  };
-
-  const response: AxiosResponse<TopChartResponse> = await axios.request(
-    options
-  );
-  const paths = response.data.tracks.map((track) => {
-    return {
-      params: { songid: track.key },
-    };
-  });
-
   return {
     paths,
     fallback: true,

@@ -1,36 +1,28 @@
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { useGetTopChartQuery } from '@/redux/services/api';
+import {
+  useGetRecomendedForYouSongsQuery,
+  useGetTopChartQuery,
+} from '@/redux/services/api';
 import { useAppSelector } from '@/redux/app/hooks';
-import axios, { AxiosResponse } from 'axios';
 
 import SongCard from '@/components/SongCard';
 import SwiperSlideSong from '@/components/SwiperSlideSong';
 import SwiperSlideArtists from '@/components/SwiperSlideArtists';
 import SkeletonLoadingGrid from '@/components/SkeletonLoadingGrid';
 import SkeletonLoadingSlide from '@/components/SkeletonLoadingSlide';
-import SwiperSlideSongEmpty from '@/components/SwiperSlideSongEmpty';
 
-import { generateRequestOptions } from '@/utils';
-import { SongsRecomendationResponse as ForYouSongsResponse } from '@/types/songsRecomendation';
-
-export default function Home({
-  forYouSongs,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home() {
   const { isPlaying, activeSong } = useAppSelector(
     (state) => state.musicPlayer
   );
-  const [preRenderComplete, setPreRenderComplete] = useState(false);
 
   const { data, error, isFetching } = useGetTopChartQuery({ pageSize: 20 });
+  const { data: forYouSongs, isFetching: isFetchingForYouSongs } =
+    useGetRecomendedForYouSongsQuery();
+
   const topArtists = data?.tracks.slice(0, 10);
 
-  useEffect(() => {
-    setPreRenderComplete(true);
-  }, []);
-
-  if (isFetching) {
+  if (isFetching || isFetchingForYouSongs) {
     return (
       <div className="px-4 py-5 sm:px-6">
         <SkeletonLoadingSlide />
@@ -84,37 +76,37 @@ export default function Home({
   );
 }
 
-export const getStaticProps: GetStaticProps<{
-  forYouSongs: ForYouSongsResponse;
-}> = async () => {
-  const BASE_URL = 'https://shazam.p.rapidapi.com';
-  const options = generateRequestOptions({
-    method: 'GET',
-    url: `${BASE_URL}/songs/list-recommendations`,
-    params: {
-      key: '413168592',
-      locale: 'en-US',
-    },
-  });
+// export const getStaticProps: GetStaticProps<{
+//   forYouSongs: ForYouSongsResponse;
+// }> = async () => {
+//   const BASE_URL = 'https://shazam.p.rapidapi.com';
+//   const options = generateRequestOptions({
+//     method: 'GET',
+//     url: `${BASE_URL}/songs/list-recommendations`,
+//     params: {
+//       key: '413168592',
+//       locale: 'en-US',
+//     },
+//   });
 
-  try {
-    const response: AxiosResponse<ForYouSongsResponse> = await axios.request(
-      options
-    );
-    const forYouSongs = response.data;
+//   try {
+//     const response: AxiosResponse<ForYouSongsResponse> = await axios.request(
+//       options
+//     );
+//     const forYouSongs = response.data;
 
-    return {
-      props: {
-        forYouSongs,
-      },
-    };
-  } catch (error) {
-    const emptySongs = [] as unknown as ForYouSongsResponse;
-    return {
-      props: {
-        forYouSongs: emptySongs,
-      },
-      revalidate: 172800,
-    };
-  }
-};
+//     return {
+//       props: {
+//         forYouSongs,
+//       },
+//     };
+//   } catch (error) {
+//     const emptySongs = [] as unknown as ForYouSongsResponse;
+//     return {
+//       props: {
+//         forYouSongs: emptySongs,
+//       },
+//       revalidate: 172800,
+//     };
+//   }
+// };
