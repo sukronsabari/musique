@@ -47,14 +47,12 @@ export default function Home({
   return (
     <div className="px-6 py-5 lg:px-12">
       <h2 className="font-bold text-xl mb-6">For You</h2>
-      {preRenderComplete && forYouSongs?.tracks?.length ? (
+      {preRenderComplete && forYouSongs?.tracks?.length && (
         <SwiperSlideSong
           tracks={forYouSongs.tracks}
           activeSong={activeSong}
           isPlaying={isPlaying}
         />
-      ) : (
-        <SwiperSlideSongEmpty />
       )}
 
       <h2 className="font-bold text-xl mt-10 mb-6">Top Artists</h2>
