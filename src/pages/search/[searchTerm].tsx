@@ -93,7 +93,7 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        tracksHitsResult: response.data.tracks.hits,
+        tracksHitsResult: response?.data?.tracks?.hits,
         searchTerm: decodeURIComponent(searchTerm),
       },
     };
