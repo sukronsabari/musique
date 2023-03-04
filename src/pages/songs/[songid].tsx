@@ -1,22 +1,27 @@
 /* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import { SongDetailResponse } from '@/types/songDetail';
-import { TopChartResponse } from '@/types/topChart';
-import NoCoverArt from '@/assets/nocoverart.jpg';
+import { useRouter } from 'next/router';
 import { GetStaticProps, InferGetStaticPropsType, GetStaticPaths } from 'next';
 import axios, { AxiosResponse } from 'axios';
 import { ParsedUrlQuery } from 'querystring';
-import VideoPlayer from '@/components/VideoPlayer';
 import { v4 as uuidv4 } from 'uuid';
+
 import { useAppDispatch, useAppSelector } from '@/redux/app/hooks';
 import { setIsPlaying, setActiveSong } from '@/redux/features/musicPlayerSlice';
+
+import VideoPlayer from '@/components/VideoPlayer';
 import PlayPauseIcon from '@/components/PlayPauseIcon';
 import SongCard from '@/components/SongCard';
-import { SongsRecomendationResponse } from '@/types/songsRecomendation';
-import { useState, useEffect } from 'react';
+
+import NoCoverArt from '@/assets/nocoverart.jpg';
 import { generateRequestOptions } from '@/utils';
+
+import { SongDetailResponse } from '@/types/songDetail';
+import { TopChartResponse } from '@/types/topChart';
+import { SongsRecomendationResponse } from '@/types/songsRecomendation';
 
 const BASE_URL = 'https://shazam.p.rapidapi.com';
 
@@ -33,6 +38,7 @@ export default function DetailSong({
     (state) => state.musicPlayer
   );
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const videoSection = trackDetail?.sections?.find(
     (section) => section.type === 'VIDEO'
@@ -57,6 +63,10 @@ export default function DetailSong({
     // Updating a state causes a re-render
     setPreRenderComplete(true);
   }, []);
+
+  if (router.isFallback) {
+    return <h2 className="font-bold px-4 sm:px-6 py-5">Loading...</h2>;
+  }
 
   return (
     <>
