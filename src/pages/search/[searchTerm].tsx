@@ -50,11 +50,11 @@ export default function SearchPage({
           Result For: {searchTerm || ''}
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-4 md:gap-y-6 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {tracksHitsResult?.length ? (
-            tracksHitsResult.map((hit, index) => (
+          {tracks?.length ? (
+            tracks.map((track, index) => (
               <SongCard
-                key={hit.track.key}
-                track={hit.track}
+                key={track.key}
+                track={track}
                 tracks={tracks}
                 index={index}
                 isPlaying={isPlaying}

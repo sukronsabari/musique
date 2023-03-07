@@ -33,12 +33,13 @@ export default function SongCard({
     dispatch(setIsPlaying(false));
   };
 
+  const isActiveSong = activeSong?.key === track?.key;
   return (
     <div className="p-4 bg-white rounded-lg max-w-[160px] sm:max-w-[190px] md:max-w-[210px] lg:max-w-[190px]">
       <div className="relative group">
         <div
           className={`absolute top-0 z-[2] items-center justify-center w-full h-full bg-black/80 rounded-lg group-hover:flex ${
-            activeSong?.title === track?.title ? 'flex' : 'hidden'
+            isActiveSong ? 'flex' : 'hidden'
           }`}
         >
           <div className="text-white">
